@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
   node: circleci/node@3.0.1
-jobs:
+commands:
   lint-test:
     executor: node/default
     steps:
@@ -11,13 +11,26 @@ jobs:
             - run: npm install
             - run: npm run lint:js
             - run: npm test
+jobs:
+  node-v8:
+    docker:
+      - image: node:8
+    steps:
+      - lint-test
+  node-v10:
+    docker:
+      - image: node:10
+    steps:
+      - lint-test
+  node-v12:
+    docker:
+      - image: node:12
+    steps:
+      - lint-test
+
 workflows:
-  matrix-tests:
+  multi-lint-test:
     jobs:
-      - lint-test:
-          matrix:
-            parameters:
-              version:
-                - 13.11.0
-                - 12.16.0
-                - 10.19.0
+      - node-v8
+      - node-v10
+      - node-v12
