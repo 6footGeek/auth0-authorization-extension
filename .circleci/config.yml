@@ -11,11 +11,9 @@ jobs:
       - image: circleci/node:<< parameters.version >>
     steps:
       - checkout
-      - node/with-cache:
-          steps:
-            - run: npm install
-            - run: npm run lint:js
-            - run: npm test
+      - run: npm install
+      - run: npm run lint:js
+      - run: npm test
 workflows:
   build-lint-test:
     jobs:
