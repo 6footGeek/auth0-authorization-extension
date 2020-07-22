@@ -2,7 +2,7 @@ version: 2.1
 orbs:
   node: circleci/node@3.0.1
 jobs:
-  build-lint-test:
+  lint-test:
     executor: node/default
     steps:
       - checkout
@@ -12,9 +12,12 @@ jobs:
             - run: npm run lint:js
             - run: npm test
 workflows:
-  build-lint-test:
+  matrix-tests:
     jobs:
-      - build-lint-test:
+      - lint-test:
           matrix:
             parameters:
-              node-version: ["v8.17.0", "10.19.0", "12.18.2"]
+              version:
+                - 13.11.0
+                - 12.16.0
+                - 10.19.0
