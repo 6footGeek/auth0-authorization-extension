@@ -1,12 +1,12 @@
-import { shallow } from "enzyme";
-import { expect } from "chai";
-import { describe, it } from "mocha";
+import { shallow } from 'enzyme';
+import { expect } from 'chai';
+import { describe, it } from 'mocha';
 
-describe("#Client-Components-UserOverview", () => {
+describe('#Client-Components-UserOverview', () => {
   const renderComponent = (options) => {
     options = options || {};
 
-    const defaultFunction = () => "";
+    const defaultFunction = () => '';
     return shallow(
       <UserOverview
         onReset={options.onReset || defaultFunction}
@@ -15,24 +15,24 @@ describe("#Client-Components-UserOverview", () => {
         users={options.users || []}
         total={options.total || 0}
         loading={options.loading || false}
-        fetchQuery={options.fetchQuery || ""}
+        fetchQuery={options.fetchQuery || ''}
         renderActions={options.renderActions || defaultFunction}
         getUsersOnPage={options.getUsersOnPage || defaultFunction}
       />
     );
   };
 
-  it("handleUsersPageChange should use correct query/filter params", (done) => {
+  it('handleUsersPageChange should use correct query/filter params', (done) => {
     const pageNum = 1;
-    const selectedFilter = "email";
+    const selectedFilter = 'email';
     const options = {
-      fetchQuery: "*@example.com",
+      fetchQuery: '*@example.com',
       getUsersOnPage: (page, query, filter) => {
         expect(page).to.equal(pageNum);
         expect(query).to.equal(options.fetchQuery);
         expect(filter).to.equal(selectedFilter);
         return done();
-      },
+      }
     };
 
     const component = renderComponent(options);
