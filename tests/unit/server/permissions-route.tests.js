@@ -1,32 +1,32 @@
-import { expect } from "chai";
-import { getServerData } from "../server";
-import { getToken } from "../mocks/tokens";
-import config from "../../../server/lib/config";
+import { expect } from 'chai';
+import { getServerData } from '../server';
+import { getToken } from '../mocks/tokens';
+import config from '../../../server/lib/config';
 
-describe("permissions-route", () => {
+describe('permissions-route', () => {
   const { db, server } = getServerData();
-  const guid = "A56a418065aa426ca9455fd21deC0538";
-  const permissionName = "test-permission";
+  const guid = 'A56a418065aa426ca9455fd21deC0538';
+  const permissionName = 'test-permission';
   const permission = {
     name: permissionName,
-    description: "description",
-    applicationType: "client",
-    applicationId: config("AUTH0_CLIENT_ID"),
-    _id: guid,
+    description: 'description',
+    applicationType: 'client',
+    applicationId: config('AUTH0_CLIENT_ID'),
+    _id: guid
   };
 
   before((done) => {
     db.canChange = () => Promise.resolve();
-    db.getPermissions = () => Promise.resolve([permission]);
+    db.getPermissions = () => Promise.resolve([ permission ]);
     db.getPermission = () => Promise.resolve(permission);
     done();
   });
 
-  describe("#get", () => {
-    it("should return 401 if no token provided", (cb) => {
+  describe('#get', () => {
+    it('should return 401 if no token provided', (cb) => {
       const options = {
-        method: "GET",
-        url: "/api/permissions",
+        method: 'GET',
+        url: '/api/permissions'
       };
 
       server.inject(options, (response) => {
@@ -35,14 +35,14 @@ describe("permissions-route", () => {
       });
     });
 
-    it("should return 403 if scope is missing (list of permissions)", (cb) => {
+    it('should return 403 if scope is missing (list of permissions)', (cb) => {
       const token = getToken();
       const options = {
-        method: "GET",
-        url: "/api/permissions",
+        method: 'GET',
+        url: '/api/permissions',
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {
@@ -51,33 +51,33 @@ describe("permissions-route", () => {
       });
     });
 
-    it("should return list of permissions", (cb) => {
-      const token = getToken("read:permissions");
+    it('should return list of permissions', (cb) => {
+      const token = getToken('read:permissions');
       const options = {
-        method: "GET",
-        url: "/api/permissions",
+        method: 'GET',
+        url: '/api/permissions',
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {
         expect(response.result.total).to.be.equal(1);
-        expect(response.result.permissions).to.be.a("array");
+        expect(response.result.permissions).to.be.a('array');
         expect(response.result.permissions[0]._id).to.be.equal(guid);
         expect(response.result.permissions[0].name).to.be.equal(permissionName);
         cb();
       });
     });
 
-    it("should return 403 if scope is missing (single permission)", (cb) => {
+    it('should return 403 if scope is missing (single permission)', (cb) => {
       const token = getToken();
       const options = {
-        method: "GET",
+        method: 'GET',
         url: `/api/permissions/${guid}`,
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {
@@ -86,18 +86,18 @@ describe("permissions-route", () => {
       });
     });
 
-    it("should return permission data", (cb) => {
-      const token = getToken("read:permissions");
+    it('should return permission data', (cb) => {
+      const token = getToken('read:permissions');
       const options = {
-        method: "GET",
+        method: 'GET',
         url: `/api/permissions/${guid}`,
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {
-        expect(response.result).to.be.a("object");
+        expect(response.result).to.be.a('object');
         expect(response.result._id).to.be.equal(guid);
         expect(response.result.name).to.be.equal(permissionName);
         cb();
@@ -105,15 +105,15 @@ describe("permissions-route", () => {
     });
   });
 
-  describe("#delete", () => {
-    it("should return 403 if scope is missing (delete permission)", (cb) => {
+  describe('#delete', () => {
+    it('should return 403 if scope is missing (delete permission)', (cb) => {
       const token = getToken();
       const options = {
-        method: "DELETE",
+        method: 'DELETE',
         url: `/api/permissions/${guid}`,
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {
@@ -122,20 +122,20 @@ describe("permissions-route", () => {
       });
     });
 
-    it("should delete permission", (cb) => {
+    it('should delete permission', (cb) => {
       let deletedId = null;
-      const token = getToken("delete:permissions");
+      const token = getToken('delete:permissions');
       db.deletePermission = (id) => {
         deletedId = id;
         return Promise.resolve();
       };
 
       const options = {
-        method: "DELETE",
+        method: 'DELETE',
         url: `/api/permissions/${guid}`,
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {
@@ -146,15 +146,15 @@ describe("permissions-route", () => {
     });
   });
 
-  describe("#post", () => {
-    it("should return 403 if scope is missing (create permission)", (cb) => {
+  describe('#post', () => {
+    it('should return 403 if scope is missing (create permission)', (cb) => {
       const token = getToken();
       const options = {
-        method: "POST",
-        url: "/api/permissions",
+        method: 'POST',
+        url: '/api/permissions',
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {
@@ -163,14 +163,14 @@ describe("permissions-route", () => {
       });
     });
 
-    it("should return validation error", (cb) => {
-      const token = getToken("create:permissions");
+    it('should return validation error', (cb) => {
+      const token = getToken('create:permissions');
       const options = {
-        method: "POST",
-        url: "/api/permissions",
+        method: 'POST',
+        url: '/api/permissions',
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {
@@ -182,24 +182,24 @@ describe("permissions-route", () => {
       });
     });
 
-    it("should create permission", (cb) => {
-      const token = getToken("create:permissions");
+    it('should create permission', (cb) => {
+      const token = getToken('create:permissions');
       const payload = {
-        name: "new-permission",
-        description: "description",
-        applicationType: "client",
-        applicationId: config("AUTH0_CLIENT_ID"),
+        name: 'new-permission',
+        description: 'description',
+        applicationType: 'client',
+        applicationId: config('AUTH0_CLIENT_ID')
       };
 
       db.createPermission = (data) => Promise.resolve(data);
 
       const options = {
-        method: "POST",
-        url: "/api/permissions",
+        method: 'POST',
+        url: '/api/permissions',
         payload,
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {
@@ -210,15 +210,15 @@ describe("permissions-route", () => {
     });
   });
 
-  describe("#put", () => {
-    it("should return 403 if scope is missing (update permission)", (cb) => {
+  describe('#put', () => {
+    it('should return 403 if scope is missing (update permission)', (cb) => {
       const token = getToken();
       const options = {
-        method: "PUT",
+        method: 'PUT',
         url: `/api/permissions/${guid}`,
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {
@@ -227,14 +227,14 @@ describe("permissions-route", () => {
       });
     });
 
-    it("should return validation error", (cb) => {
-      const token = getToken("update:permissions");
+    it('should return validation error', (cb) => {
+      const token = getToken('update:permissions');
       const options = {
-        method: "PUT",
+        method: 'PUT',
         url: `/api/permissions/${guid}`,
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {
@@ -246,8 +246,8 @@ describe("permissions-route", () => {
       });
     });
 
-    it("should update permission", (cb) => {
-      const token = getToken("update:permissions");
+    it('should update permission', (cb) => {
+      const token = getToken('update:permissions');
       let updatedPermission = null;
       db.updatePermission = (id, data) => {
         updatedPermission = data;
@@ -257,18 +257,18 @@ describe("permissions-route", () => {
 
       const payload = {
         name: `${permissionName}-updated`,
-        description: "description",
-        applicationType: "client",
-        applicationId: config("AUTH0_CLIENT_ID"),
+        description: 'description',
+        applicationType: 'client',
+        applicationId: config('AUTH0_CLIENT_ID')
       };
 
       const options = {
-        method: "PUT",
+        method: 'PUT',
         url: `/api/permissions/${guid}`,
         payload,
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {

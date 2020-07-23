@@ -1,8 +1,8 @@
-import { ArgumentError } from "auth0-extension-tools";
+import { ArgumentError } from 'auth0-extension-tools';
 
-import apiCall from "./apiCall";
+import apiCall from './apiCall';
 
-module.exports = function (
+module.exports = function(
   client,
   entity,
   opts = {},
@@ -10,11 +10,11 @@ module.exports = function (
   concurrency = 5
 ) {
   if (client === null || client === undefined) {
-    throw new ArgumentError("Must provide a auth0 client object.");
+    throw new ArgumentError('Must provide a auth0 client object.');
   }
 
   if (!entity && !client[entity]) {
-    throw new ArgumentError("Must provide a valid entity for auth0 client.");
+    throw new ArgumentError('Must provide a valid entity for auth0 client.');
   }
 
   const getter = client[entity].getAll;
@@ -25,7 +25,7 @@ module.exports = function (
 
   const getTotals = () =>
     apiCall(client, getter, [
-      Object.assign({}, options, { include_totals: true, page: 0 }),
+      Object.assign({}, options, { include_totals: true, page: 0 })
     ]).then((response) => {
       total = response.total || 0;
       pageCount = Math.ceil(total / perPage);
@@ -35,7 +35,7 @@ module.exports = function (
     });
 
   const getPage = (page) =>
-    apiCall(client, getter, [Object.assign({}, options, { page: page })]).then(
+    apiCall(client, getter, [ Object.assign({}, options, { page: page }) ]).then(
       (data) => {
         data.forEach((item) => result.push(item));
         return null;

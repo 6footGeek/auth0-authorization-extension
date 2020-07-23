@@ -13,7 +13,7 @@ export default (context, promise, args, retry = 2) => {
         const ratelimitReset =
           (originalError.response &&
             originalError.response.header &&
-            originalError.response.header["x-ratelimit-reset"]) ||
+            originalError.response.header['x-ratelimit-reset']) ||
           0;
         const currentTime = Math.round(new Date().getTime() / 1000);
         const maxTimeout = 10; // wait for 10 seconds max

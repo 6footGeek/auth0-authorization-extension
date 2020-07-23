@@ -1,11 +1,11 @@
-import _ from "lodash";
+import _ from 'lodash';
 
-import { ArgumentError, ValidationError } from "auth0-extension-tools";
-import config from "../config";
+import { ArgumentError, ValidationError } from 'auth0-extension-tools';
+import config from '../config';
 
 const checkUnique = (
   items = [],
-  errorMessage = "Record with that identifier is already exists.",
+  errorMessage = 'Record with that identifier is already exists.',
   id
 ) => {
   if (items.length === 0) {
@@ -32,14 +32,14 @@ export default class Database {
   }
 
   getStatus() {
-    if (!config("STORAGE_TYPE") || config("STORAGE_TYPE") === "webtask") {
+    if (!config('STORAGE_TYPE') || config('STORAGE_TYPE') === 'webtask') {
       return this.provider.storageContext.read().then((data) => ({
-        size: Buffer.byteLength(JSON.stringify(data), "utf8"),
-        type: "default",
+        size: Buffer.byteLength(JSON.stringify(data), 'utf8'),
+        type: 'default'
       }));
     }
 
-    return Promise.resolve({ size: null, type: config("STORAGE_TYPE") });
+    return Promise.resolve({ size: null, type: config('STORAGE_TYPE') });
   }
 
   canChange(type, checkFor, id) {
@@ -53,7 +53,7 @@ export default class Database {
       )
       .then((items) => {
         if (items.length) {
-          const names = items.map((item) => item.name).join(", ");
+          const names = items.map((item) => item.name).join(', ');
           const message = `Unable to touch ${checkFor} while used in ${type}: ${names}`;
           return Promise.reject(new ValidationError(message));
         }
@@ -63,43 +63,43 @@ export default class Database {
 
   getApiKey() {
     return this.provider
-      .getAll("configuration")
+      .getAll('configuration')
       .then((records) => (records.length ? records[0].apikey : null));
   }
 
   updateApiKey(apikey) {
     return this.provider
-      .getAll("configuration")
+      .getAll('configuration')
       .then((records) => (records.length ? records[0] : {}))
       .then((data) =>
-        this.provider.update("configuration", "v1", { ...data, apikey }, true)
+        this.provider.update('configuration', 'v1', { ...data, apikey }, true)
       );
   }
 
   getConfiguration() {
     return this.provider
-      .getAll("configuration")
+      .getAll('configuration')
       .then((records) => (records.length ? records[0] : null));
   }
 
   updateConfiguration(data) {
-    return this.provider.update("configuration", "v1", data, true);
+    return this.provider.update('configuration', 'v1', data, true);
   }
 
   getRules() {
-    return this.provider.getAll("rules");
+    return this.provider.getAll('rules');
   }
 
   createRule(rule) {
-    return this.provider.create("rules", rule);
+    return this.provider.create('rules', rule);
   }
 
   getPermissions() {
-    return this.provider.getAll("permissions");
+    return this.provider.getAll('permissions');
   }
 
   getPermission(id) {
-    return this.provider.get("permissions", id);
+    return this.provider.get('permissions', id);
   }
 
   createPermission(permission) {
@@ -114,7 +114,7 @@ export default class Database {
           `Permission with name "${permission.name}" already exists for this application`
         )
       )
-      .then(() => this.provider.create("permissions", permission));
+      .then(() => this.provider.create('permissions', permission));
   }
 
   updatePermission(id, permission) {
@@ -130,23 +130,23 @@ export default class Database {
           id
         )
       )
-      .then(() => this.canChange("roles", "permissions", id))
-      .then(() => this.canChange("groups", "permissions", id))
-      .then(() => this.provider.update("permissions", id, permission));
+      .then(() => this.canChange('roles', 'permissions', id))
+      .then(() => this.canChange('groups', 'permissions', id))
+      .then(() => this.provider.update('permissions', id, permission));
   }
 
   deletePermission(id) {
-    return this.canChange("roles", "permissions", id).then(() =>
-      this.provider.delete("permissions", id)
+    return this.canChange('roles', 'permissions', id).then(() =>
+      this.provider.delete('permissions', id)
     );
   }
 
   getRoles() {
-    return this.provider.getAll("roles");
+    return this.provider.getAll('roles');
   }
 
   getRole(id) {
-    return this.provider.get("roles", id);
+    return this.provider.get('roles', id);
   }
 
   createRole(role) {
@@ -161,7 +161,7 @@ export default class Database {
           `Role with name "${role.name}" already exists for this application`
         )
       )
-      .then(() => this.provider.create("roles", role));
+      .then(() => this.provider.create('roles', role));
   }
 
   updateRole(id, role) {
@@ -177,21 +177,21 @@ export default class Database {
           id
         )
       )
-      .then(() => this.provider.update("roles", id, role));
+      .then(() => this.provider.update('roles', id, role));
   }
 
   deleteRole(id) {
-    return this.canChange("groups", "roles", id).then(() =>
-      this.provider.delete("roles", id)
+    return this.canChange('groups', 'roles', id).then(() =>
+      this.provider.delete('roles', id)
     );
   }
 
   getGroups() {
-    return this.provider.getAll("groups");
+    return this.provider.getAll('groups');
   }
 
   getGroup(id) {
-    return this.provider.get("groups", id);
+    return this.provider.get('groups', id);
   }
 
   createGroup(group) {
@@ -204,7 +204,7 @@ export default class Database {
           `Group with name "${group.name}" already exists`
         )
       )
-      .then(() => this.provider.create("groups", group));
+      .then(() => this.provider.create('groups', group));
   }
 
   updateGroup(id, group) {
@@ -218,24 +218,24 @@ export default class Database {
           id
         )
       )
-      .then(() => this.provider.update("groups", id, group));
+      .then(() => this.provider.update('groups', id, group));
   }
 
   deleteGroup(id) {
-    return this.canChange("groups", "nested", id).then(() =>
-      this.provider.delete("groups", id)
+    return this.canChange('groups', 'nested', id).then(() =>
+      this.provider.delete('groups', id)
     );
   }
 
   getApplications() {
-    return this.provider.getAll("applications");
+    return this.provider.getAll('applications');
   }
 
   getApplication(clientId) {
-    return this.provider.get("applications", clientId);
+    return this.provider.get('applications', clientId);
   }
 
   updateApplication(clientId, application) {
-    return this.provider.update("applications", clientId, application, true);
+    return this.provider.update('applications', clientId, application, true);
   }
 }
