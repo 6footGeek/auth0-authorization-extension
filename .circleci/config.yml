@@ -11,9 +11,8 @@ jobs:
       - image: circleci/node:<< parameters.version >>
     steps:
       - checkout
-      - run: npm ci
+      - npm_install
       - run: npm run lint:js
-      - run: npm test
       - run: npm run build
 workflows:
   matrix-tests:
