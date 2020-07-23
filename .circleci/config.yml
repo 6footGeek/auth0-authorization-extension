@@ -11,7 +11,7 @@ jobs:
       - image: circleci/node:<< parameters.version >>
     steps:
       - checkout
-      - npm_install
+      - run: npm ci
       - run: npm run lint:js
       - run: npm run build
 workflows:
