@@ -18,7 +18,7 @@ jobs:
 workflows:
   matrix-tests:
     jobs:
-      - build-lint-test - node << parameters.version >>:
+      - build-lint-test:
           version: "8"
       - build-lint-test:
           version: "10"
