@@ -14,10 +14,11 @@ jobs:
       - run: npm install
       - run: npm run lint:js
       - run: npm test
+      - run: npm run build
 workflows:
   matrix-tests:
     jobs:
-      - build-lint-test:
+      - build-lint-test - node << parameters.version >>:
           version: "8"
       - build-lint-test:
           version: "10"
