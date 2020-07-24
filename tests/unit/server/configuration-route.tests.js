@@ -1,42 +1,42 @@
-import Promise from "bluebird";
-import { expect } from "chai";
-import * as auth0 from "../mocks/auth0";
-import { getServerData } from "../server";
-import { getToken } from "../mocks/tokens";
+import Promise from 'bluebird';
+import { expect } from 'chai';
+import * as auth0 from '../mocks/auth0';
+import { getServerData } from '../server';
+import { getToken } from '../mocks/tokens';
 
-describe("configuration-route", () => {
+describe('configuration-route', () => {
   const { db, server } = getServerData();
   const rules = [
-    { name: "auth0-authorization-extension", enabled: true, id: "ruleId" },
+    { name: 'auth0-authorization-extension', enabled: true, id: 'ruleId' }
   ];
   const resourceServers = [
-    { identifier: "urn:auth0-authz-api", token_lifetime: 10, id: "rsid" },
+    { identifier: 'urn:auth0-authz-api', token_lifetime: 10, id: 'rsid' }
   ];
   let storageData = null;
 
   before((done) => {
-    db.getStatus = () => Promise.resolve({ size: 10, type: "default" });
+    db.getStatus = () => Promise.resolve({ size: 10, type: 'default' });
     db.getConfiguration = () =>
       Promise.resolve({ groupsInToken: false, rolesInToken: true });
     db.updateConfiguration = (data) => Promise.resolve(data);
     db.updateApiKey = (data) => Promise.resolve(data);
     db.provider = {
       storageContext: {
-        read: () => Promise.resolve({ key: "value" }),
+        read: () => Promise.resolve({ key: 'value' }),
         write: (data) => {
           storageData = data;
           return Promise.resolve();
-        },
-      },
+        }
+      }
     };
     done();
   });
 
-  describe("#get", () => {
-    it("should return 401 if no token provided", (cb) => {
+  describe('#get', () => {
+    it('should return 401 if no token provided', (cb) => {
       const options = {
-        method: "GET",
-        url: "/api/configuration",
+        method: 'GET',
+        url: '/api/configuration'
       };
 
       server.inject(options, (response) => {
@@ -45,14 +45,14 @@ describe("configuration-route", () => {
       });
     });
 
-    it("should return 403 if scope is missing (get config)", (cb) => {
+    it('should return 403 if scope is missing (get config)', (cb) => {
       const token = getToken();
       const options = {
-        method: "GET",
-        url: "/api/configuration",
+        method: 'GET',
+        url: '/api/configuration',
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {
@@ -61,14 +61,14 @@ describe("configuration-route", () => {
       });
     });
 
-    it("should return the config object", (cb) => {
-      const token = getToken("read:configuration");
+    it('should return the config object', (cb) => {
+      const token = getToken('read:configuration');
       const options = {
-        method: "GET",
-        url: "/api/configuration",
+        method: 'GET',
+        url: '/api/configuration',
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {
@@ -77,35 +77,35 @@ describe("configuration-route", () => {
       });
     });
 
-    it("should return the config status", (cb) => {
-      const token = getToken("read:configuration");
-      auth0.get("/api/v2/rules", rules);
+    it('should return the config status', (cb) => {
+      const token = getToken('read:configuration');
+      auth0.get('/api/v2/rules', rules);
       const options = {
-        method: "GET",
-        url: "/api/configuration/status",
+        method: 'GET',
+        url: '/api/configuration/status',
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {
-        expect(response.result.rule).to.be.an("object");
+        expect(response.result.rule).to.be.an('object');
         expect(response.result.rule.exists).to.be.equal(true);
         expect(response.result.rule.enabled).to.be.equal(true);
-        expect(response.result.database).to.be.an("object");
+        expect(response.result.database).to.be.an('object');
         expect(response.result.database.size).to.be.equal(10);
         cb();
       });
     });
 
-    it("should return 403 if scope is missing (export config)", (cb) => {
+    it('should return 403 if scope is missing (export config)', (cb) => {
       const token = getToken();
       const options = {
-        method: "GET",
-        url: "/api/configuration/export",
+        method: 'GET',
+        url: '/api/configuration/export',
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {
@@ -114,30 +114,30 @@ describe("configuration-route", () => {
       });
     });
 
-    it("should return full storage data", (cb) => {
-      const token = getToken("read:configuration");
+    it('should return full storage data', (cb) => {
+      const token = getToken('read:configuration');
       const options = {
-        method: "GET",
-        url: "/api/configuration/export",
+        method: 'GET',
+        url: '/api/configuration/export',
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {
-        expect(response.result.key).to.equal("value");
+        expect(response.result.key).to.equal('value');
         cb();
       });
     });
 
-    it("should return 403 if scope is missing (get resource-server)", (cb) => {
+    it('should return 403 if scope is missing (get resource-server)', (cb) => {
       const token = getToken();
       const options = {
-        method: "GET",
-        url: "/api/configuration/resource-server",
+        method: 'GET',
+        url: '/api/configuration/resource-server',
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {
@@ -146,15 +146,15 @@ describe("configuration-route", () => {
       });
     });
 
-    it("should return resource-server data", (cb) => {
-      const token = getToken("read:resource-server");
-      auth0.get("/api/v2/resource-servers", resourceServers);
+    it('should return resource-server data', (cb) => {
+      const token = getToken('read:resource-server');
+      auth0.get('/api/v2/resource-servers', resourceServers);
       const options = {
-        method: "GET",
-        url: "/api/configuration/resource-server",
+        method: 'GET',
+        url: '/api/configuration/resource-server',
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {
@@ -165,15 +165,15 @@ describe("configuration-route", () => {
     });
   });
 
-  describe("#patch", () => {
-    it("should return 403 if scope is missing (update config)", (cb) => {
+  describe('#patch', () => {
+    it('should return 403 if scope is missing (update config)', (cb) => {
       const token = getToken();
       const options = {
-        method: "PATCH",
-        url: "/api/configuration",
+        method: 'PATCH',
+        url: '/api/configuration',
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {
@@ -182,17 +182,17 @@ describe("configuration-route", () => {
       });
     });
 
-    it("should return validation error", (cb) => {
-      const token = getToken("update:configuration");
+    it('should return validation error', (cb) => {
+      const token = getToken('update:configuration');
       const options = {
-        method: "PATCH",
-        url: "/api/configuration",
+        method: 'PATCH',
+        url: '/api/configuration',
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`
         },
         payload: {
-          groupsInToken: "noes",
-        },
+          groupsInToken: 'noes'
+        }
       };
 
       server.inject(options, (response) => {
@@ -204,19 +204,19 @@ describe("configuration-route", () => {
       });
     });
 
-    it("should update configuration", (cb) => {
-      const token = getToken("update:configuration");
-      auth0.get("/api/v2/rules", rules);
-      auth0.patch("/api/v2/rules/ruleId", rules);
+    it('should update configuration', (cb) => {
+      const token = getToken('update:configuration');
+      auth0.get('/api/v2/rules', rules);
+      auth0.patch('/api/v2/rules/ruleId', rules);
       const options = {
-        method: "PATCH",
-        url: "/api/configuration",
+        method: 'PATCH',
+        url: '/api/configuration',
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`
         },
         payload: {
-          groupsInToken: "yes",
-        },
+          groupsInToken: 'yes'
+        }
       };
 
       server.inject(options, (response) => {
@@ -225,14 +225,14 @@ describe("configuration-route", () => {
       });
     });
 
-    it("should return 403 if scope is missing (update resource-server)", (cb) => {
+    it('should return 403 if scope is missing (update resource-server)', (cb) => {
       const token = getToken();
       const options = {
-        method: "PATCH",
-        url: "/api/configuration/resource-server",
+        method: 'PATCH',
+        url: '/api/configuration/resource-server',
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {
@@ -241,21 +241,21 @@ describe("configuration-route", () => {
       });
     });
 
-    it("should update resource-server", (cb) => {
-      const token = getToken("update:resource-server");
-      auth0.get("/api/v2/resource-servers", resourceServers);
-      auth0.get("/api/v2/resource-servers", resourceServers);
-      auth0.patch("/api/v2/resource-servers/rsid");
+    it('should update resource-server', (cb) => {
+      const token = getToken('update:resource-server');
+      auth0.get('/api/v2/resource-servers', resourceServers);
+      auth0.get('/api/v2/resource-servers', resourceServers);
+      auth0.patch('/api/v2/resource-servers/rsid');
       const options = {
-        method: "PATCH",
-        url: "/api/configuration/resource-server",
+        method: 'PATCH',
+        url: '/api/configuration/resource-server',
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`
         },
         payload: {
           apiAccess: true,
-          token_lifetime: 10,
-        },
+          token_lifetime: 10
+        }
       };
 
       server.inject(options, (response) => {
@@ -264,34 +264,34 @@ describe("configuration-route", () => {
       });
     });
 
-    it("should rotate apikey and return hash", (cb) => {
-      const token = getToken("update:configuration");
-      auth0.put("/api/v2/rules-configs/AUTHZ_EXT_API_KEY");
+    it('should rotate apikey and return hash', (cb) => {
+      const token = getToken('update:configuration');
+      auth0.put('/api/v2/rules-configs/AUTHZ_EXT_API_KEY');
       const options = {
-        method: "PATCH",
-        url: "/api/configuration/rotate-apikey",
+        method: 'PATCH',
+        url: '/api/configuration/rotate-apikey',
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {
-        expect(response.result.hash).to.be.a("string");
+        expect(response.result.hash).to.be.a('string');
         expect(response.result.hash.length).to.be.equal(64);
         cb();
       });
     });
   });
 
-  describe("#post", () => {
-    it("should return 403 if scope is missing (import config)", (cb) => {
+  describe('#post', () => {
+    it('should return 403 if scope is missing (import config)', (cb) => {
       const token = getToken();
       const options = {
-        method: "POST",
-        url: "/api/configuration/import",
+        method: 'POST',
+        url: '/api/configuration/import',
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {
@@ -300,17 +300,17 @@ describe("configuration-route", () => {
       });
     });
 
-    it("should return validation error", (cb) => {
-      const token = getToken("update:configuration");
+    it('should return validation error', (cb) => {
+      const token = getToken('update:configuration');
       const options = {
-        method: "POST",
-        url: "/api/configuration/import",
+        method: 'POST',
+        url: '/api/configuration/import',
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`
         },
         payload: {
-          key: "value",
-        },
+          key: 'value'
+        }
       };
 
       server.inject(options, (response) => {
@@ -320,22 +320,22 @@ describe("configuration-route", () => {
       });
     });
 
-    it("should import configuration", (cb) => {
-      const token = getToken("update:configuration");
+    it('should import configuration', (cb) => {
+      const token = getToken('update:configuration');
       const options = {
-        method: "POST",
-        url: "/api/configuration/import",
+        method: 'POST',
+        url: '/api/configuration/import',
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`
         },
         payload: {
           configuration: [
             {
-              _id: "v1",
-              persistRoles: true,
-            },
-          ],
-        },
+              _id: 'v1',
+              persistRoles: true
+            }
+          ]
+        }
       };
 
       server.inject(options, (response) => {
@@ -346,15 +346,15 @@ describe("configuration-route", () => {
     });
   });
 
-  describe("#delete", () => {
-    it("should return 403 if scope is missing (disable resource-server)", (cb) => {
+  describe('#delete', () => {
+    it('should return 403 if scope is missing (disable resource-server)', (cb) => {
       const token = getToken();
       const options = {
-        method: "DELETE",
-        url: "/api/configuration/resource-server",
+        method: 'DELETE',
+        url: '/api/configuration/resource-server',
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {
@@ -363,16 +363,16 @@ describe("configuration-route", () => {
       });
     });
 
-    it("should delete resource-server", (cb) => {
-      const token = getToken("delete:resource-server");
-      auth0.get("/api/v2/resource-servers", resourceServers);
-      auth0.delete("/api/v2/resource-servers/rsid");
+    it('should delete resource-server', (cb) => {
+      const token = getToken('delete:resource-server');
+      auth0.get('/api/v2/resource-servers', resourceServers);
+      auth0.delete('/api/v2/resource-servers/rsid');
       const options = {
-        method: "DELETE",
-        url: "/api/configuration/resource-server",
+        method: 'DELETE',
+        url: '/api/configuration/resource-server',
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       };
 
       server.inject(options, (response) => {
