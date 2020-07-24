@@ -19,7 +19,8 @@
     "test:clean": "rimraf ./coverage && rimraf ./.nyc_output",
     "test:integration": "mocha tests/integration/mocha.js ./tests/integration/**/*.tests.js -R list --timeout 12000",
     "test:integration:wt": "node ./tests/integration/remote.js",
-    "lint:js": "eslint --ignore-path .gitignore --ignore-pattern build --ignore-pattern webpack ."
+    "lint:js": "eslint --ignore-path .gitignore --ignore-pattern build --ignore-pattern webpack .",
+    "lint:fix": "eslint --ignore-path .gitignore --ignore-pattern build --ignore-pattern webpack . --fix"
   },
   "keywords": [
     "auth0"
@@ -28,7 +29,7 @@
   "license": "MIT",
   "auth0-extension": {
     "externals": [
-      "@auth0/hapi@13.5.1",
+      "@auth0/hapi@13.6.0",
       "async@2.1.2",
       "auth0-extension-hapi-tools@1.3.1",
       "auth0-extension-s3-tools@1.1.1",
@@ -124,6 +125,7 @@
     "babel-loader": "6.4.1",
     "babel-plugin-transform-runtime": "6.23.0",
     "babel-polyfill": "6.23.0",
+    "babel-preset-babili": "^0.1.4",
     "babel-preset-es2015": "6.24.1",
     "babel-preset-es2015-loose": "^8.0.0",
     "babel-preset-react": "6.24.1",
