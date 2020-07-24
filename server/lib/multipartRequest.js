@@ -1,3 +1,4 @@
+import Promise from 'bluebird';
 import { ArgumentError } from 'auth0-extension-tools';
 
 import apiCall from './apiCall';

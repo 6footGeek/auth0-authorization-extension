@@ -1,4 +1,6 @@
 /* eslint-disable no-underscore-dangle, no-shadow */
+
+import Promise from 'bluebird';
 import request from 'request-promise';
 import expect from 'expect';
 import faker from 'faker';
@@ -15,7 +17,7 @@ const parallelGroups = [ ...new Array(20) ].map(() => ({
   description: faker.lorem.sentence()
 }));
 
-describe.only('groups', () => {
+describe('groups', () => {
   before(() =>
     getAccessToken().then((response) => {
       accessToken = response;

@@ -1,21 +1,22 @@
-import Joi from 'joi';
+import Promise from "bluebird";
+import Joi from "joi";
 
 module.exports = () => ({
-  method: 'DELETE',
-  path: '/api/users/{id}/roles',
+  method: "DELETE",
+  path: "/api/users/{id}/roles",
   config: {
     auth: {
-      strategies: [ 'jwt' ],
-      scope: [ 'update:roles' ]
+      strategies: ["jwt"],
+      scope: ["update:roles"],
     },
-    description: 'Remove a single user from roles.',
-    tags: [ 'api' ],
+    description: "Remove a single user from roles.",
+    tags: ["api"],
     validate: {
       params: {
-        id: Joi.string().required()
+        id: Joi.string().required(),
       },
-      payload: Joi.array().items(Joi.string().guid()).required().min(1)
-    }
+      payload: Joi.array().items(Joi.string().guid()).required().min(1),
+    },
   },
   handler: (req, reply) => {
     const roleIds = req.payload;
@@ -35,5 +36,5 @@ module.exports = () => ({
     )
       .then(() => reply().code(204))
       .catch((err) => reply.error(err));
-  }
+  },
 });

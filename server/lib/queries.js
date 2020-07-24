@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import nconf from 'nconf';
-
+import Promise from 'bluebird';
 import memoizer from 'lru-memoizer';
 import apiCall from './apiCall';
 

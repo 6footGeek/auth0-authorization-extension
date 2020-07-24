@@ -1,66 +1,66 @@
-import request from 'request-promise';
-import expect from 'expect';
-import faker from 'faker';
-
+import request from "request-promise";
+import expect from "expect";
+import faker from "faker";
+import Promise from "bluebird";
 import {
   getAccessToken,
   authzApi,
   token,
   extensionApiKey,
-  chunks
-} from './utils';
-import importData from './test-data.json';
-import config from '../../server/lib/config';
+  chunks,
+} from "./utils";
+import importData from "./test-data.json";
+import config from "../../server/lib/config";
 
 let usersData = [];
 let mgmtHeader = {};
-const clientId = config('AUTH0_CLIENT_ID');
+const clientId = config("AUTH0_CLIENT_ID");
 
 // Use Username-Password-Authentication by default.
-const connectionName = 'Username-Password-Authentication';
+const connectionName = "Username-Password-Authentication";
 
-describe('policy', () => {
+describe("policy", () => {
   before((done) => {
     getAccessToken()
       .then(() => {
         request
           .post({
-            url: authzApi('/configuration/import'),
+            url: authzApi("/configuration/import"),
             form: {},
             headers: token(),
-            resolveWithFullResponse: true
+            resolveWithFullResponse: true,
           })
           .then(() => {
             // Get a Management API token.
             request
               .post({
-                uri: `https://${config('AUTH0_DOMAIN')}/oauth/token`,
+                uri: `https://${config("AUTH0_DOMAIN")}/oauth/token`,
                 form: {
-                  audience: `https://${config('AUTH0_DOMAIN')}/api/v2/`,
-                  client_id: config('AUTH0_CLIENT_ID'),
-                  client_secret: config('AUTH0_CLIENT_SECRET'),
-                  grant_type: 'client_credentials'
+                  audience: `https://${config("AUTH0_DOMAIN")}/api/v2/`,
+                  client_id: config("AUTH0_CLIENT_ID"),
+                  client_secret: config("AUTH0_CLIENT_SECRET"),
+                  grant_type: "client_credentials",
                 },
-                json: true
+                json: true,
               })
               .then((res) => res.access_token)
               .then((mgmtToken) => {
                 mgmtHeader = { Authorization: `Bearer ${mgmtToken}` };
 
                 // Create 10 dummy users locally.
-                usersData = [ ...new Array(10) ].map(() => ({
+                usersData = [...new Array(10)].map(() => ({
                   connection: connectionName,
                   email: faker.internet.email(),
-                  password: faker.internet.password()
+                  password: faker.internet.password(),
                 }));
 
                 // Actually create the users in the server.
                 const userCreationRequests = usersData.map((user) =>
                   request.post({
-                    url: `https://${config('AUTH0_DOMAIN')}/api/v2/users`,
+                    url: `https://${config("AUTH0_DOMAIN")}/api/v2/users`,
                     body: user,
                     headers: mgmtHeader,
-                    json: true
+                    json: true,
                   })
                 );
 
@@ -84,11 +84,11 @@ describe('policy', () => {
                   // Import data to the extension
                   request
                     .post({
-                      url: authzApi('/configuration/import'),
+                      url: authzApi("/configuration/import"),
                       body: importData,
                       headers: token(),
                       json: true,
-                      resolveWithFullResponse: true
+                      resolveWithFullResponse: true,
                     })
                     .then(() => {
                       // At this point, we are able to actually test.
@@ -107,9 +107,9 @@ describe('policy', () => {
   after((done) => {
     const userDeletions = usersData.map((user) =>
       request.delete({
-        url: `https://${config('AUTH0_DOMAIN')}/api/v2/users/${user.user_id}`,
+        url: `https://${config("AUTH0_DOMAIN")}/api/v2/users/${user.user_id}`,
         headers: mgmtHeader,
-        resolveWithFullResponse: true
+        resolveWithFullResponse: true,
       })
     );
 
@@ -127,21 +127,21 @@ describe('policy', () => {
    * If I request the groups for "Auth0 Employees"
    * and connection "Some-Connection", I should get "Internal Talks".
    */
-  it('should get the right mapping group/s with the connection name and the groups', (done) => {
+  it("should get the right mapping group/s with the connection name and the groups", (done) => {
     const user = usersData[0];
 
     request
       .post({
         url: authzApi(`/users/${user.id}/policy/${clientId}`),
-        headers: { ...token(), 'x-api-key': extensionApiKey },
+        headers: { ...token(), "x-api-key": extensionApiKey },
         json: true,
         body: {
           connectionName,
-          groups: [ 'Auth0 Employees' ]
-        }
+          groups: ["Auth0 Employees"],
+        },
       })
       .then((policy) => {
-        expect(policy.groups).toContain('Internal Talks');
+        expect(policy.groups).toContain("Internal Talks");
         done();
       });
   });
@@ -153,15 +153,15 @@ describe('policy', () => {
     request
       .post({
         url: authzApi(`/users/${user.id}/policy/${clientId}`),
-        headers: { ...token(), 'x-api-key': extensionApiKey },
+        headers: { ...token(), "x-api-key": extensionApiKey },
         json: true,
         body: {
           connectionName,
-          groups: [ 'Development' ]
-        }
+          groups: ["Development"],
+        },
       })
       .then((policy) => {
-        expect(policy.groups).toNotContain('Internal Talks');
+        expect(policy.groups).toNotContain("Internal Talks");
         done();
       });
   });

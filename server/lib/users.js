@@ -1,7 +1,7 @@
-import _ from 'lodash';
-import async from 'async';
-
-import apiCall from './apiCall';
+import _ from "lodash";
+import async from "async";
+import Promise from "bluebird";
+import apiCall from "./apiCall";
 
 export function getUsersById(client, ids, page, limit) {
   return new Promise((resolve, reject) => {
@@ -15,7 +15,7 @@ export function getUsersById(client, ids, page, limit) {
       ids,
       10,
       (userId, cb) => {
-        apiCall(client, client.users.get, [ { id: userId } ])
+        apiCall(client, client.users.get, [{ id: userId }])
           .then((user) => {
             users.push(user);
             cb();
@@ -26,7 +26,7 @@ export function getUsersById(client, ids, page, limit) {
               user_id: userId,
               name: `<Error: ${errDescription}>`,
               email: userId,
-              identities: [ { connection: 'N/A' } ]
+              identities: [{ connection: "N/A" }],
             });
             return cb();
           });
@@ -36,7 +36,7 @@ export function getUsersById(client, ids, page, limit) {
           return reject(err);
         }
 
-        const sorted = _.sortByOrder(users, 'user_id');
+        const sorted = _.sortByOrder(users, "user_id");
 
         return resolve({ total, users: sorted });
       }
