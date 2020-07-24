@@ -2,21 +2,41 @@ version: 2.1
 orbs:
   node: circleci/node@3.0.1
 
+references:
+  workspace_root: &workspace_root ~/repo
+defaults: &defaults
+  working_directory: *workspace_root
+
 jobs:
   build-lint-test:
+    <<: *defaults
     parameters:
       version:
         type: string
     docker:
       - image: circleci/node:<< parameters.version >>
-    working_directory: /tmp
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - npm-dependencies-{{ checksum "package-lock.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - npm-dependencies-
+
       - run: npm ci
       - run: npm run lint:js
       - run: npm run build
       - store_artifacts:
-          path: /tmp/dist
+          path: ./dist/package.zip
+      - save_cache:
+          name: Save npm packages to cache
+          key: npm-dependencies-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+      - persist_to_workspace:
+          root: *workspace_root
+          paths: .
+
 workflows:
   matrix-tests:
     jobs:
