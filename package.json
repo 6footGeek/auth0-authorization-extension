@@ -21,7 +21,7 @@
     "test:integration:wt": "node ./tests/integration/remote.js",
     "lint:js": "eslint --ignore-path .gitignore --ignore-pattern build --ignore-pattern webpack .",
     "lint:fix": "eslint --ignore-path .gitignore --ignore-pattern build --ignore-pattern webpack . --fix",
-    "package": "a0-ext package --client ./dist --out ./dist"
+    "package": "a0-ext package --client ./dist/client --out ./dist"
   },
   "keywords": [
     "auth0"
