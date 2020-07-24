@@ -14,6 +14,8 @@ jobs:
       - run: npm ci
       - run: npm run lint:js
       - run: npm run build
+      - store_artifacts:
+          path: /dist
 workflows:
   matrix-tests:
     jobs:

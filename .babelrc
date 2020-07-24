@@ -8,6 +8,5 @@
       "presets": ["babili"]
     }
   },
-  "plugins": ["transform-runtime"],
-  "ignore": ["./node_modules/**/*.js"]
+  "plugins": []
 }
