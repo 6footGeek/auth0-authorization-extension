@@ -9,13 +9,14 @@ jobs:
         type: string
     docker:
       - image: circleci/node:<< parameters.version >>
+    working_directory: /tmp
     steps:
       - checkout
       - run: npm ci
       - run: npm run lint:js
       - run: npm run build
       - store_artifacts:
-          path: /dist
+          path: /tmp/dist
 workflows:
   matrix-tests:
     jobs:
