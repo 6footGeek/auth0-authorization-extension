@@ -1,4 +1,4 @@
-require('babel-register')();
+require('@babel/register')();
 
 const gulp = require('gulp');
 const log = require('fancy-log');
