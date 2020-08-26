@@ -1,6 +1,6 @@
 {
-  "name": "auth0-authz-extension",
-  "version": "2.9.0",
+  "name": "auth0-authz",
+  "version": "2.10.0",
   "description": "Auth0 Authorization Extension",
   "engines": {
     "node": ">=12"
@@ -62,7 +62,7 @@
       "winston@1.0.0"
     ],
     "useBabel": false,
-    "bundleModules": false,
+    "bundleModules": true,
     "settings": {
       "WARN_DB_SIZE": 409600,
       "MAX_MULTISELECT_USERS": 5,
