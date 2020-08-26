@@ -1,3 +1,8 @@
+## [2.10.0] - 2020-08-26
+
+- Changed build versions of webpack 
+- Added user search version setting
+
 ## [2.9.0] - 2020-08-11
 
 - Multipart request for rules paging
