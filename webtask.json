@@ -1,6 +1,6 @@
 {
-  "title": "Auth0 Authorization-test",
-  "name": "auth0-authz",
+  "title": "Auth0 Authorization",
+  "name": "auth0-authz-test",
   "version": "2.10.0",
   "author": "auth0",
   "description": "This extension gives Auth0 customers the possibility to manage group memberships for their users.",
