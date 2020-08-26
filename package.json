@@ -1,5 +1,5 @@
 {
-  "name": "auth0-authz",
+  "name": "auth0-authz-test",
   "version": "2.10.0",
   "description": "Auth0 Authorization Extension",
   "engines": {
